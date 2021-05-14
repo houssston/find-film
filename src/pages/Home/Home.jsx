@@ -2,35 +2,61 @@ import React, {useEffect, useState} from 'react';
 import {tmdbAPI} from "../../api/api";
 
 const Home = () => {
-    const [personNameList, setPersonNameList] = useState([]);
-    const [personName, setPersonName] = useState("");
-
-    //const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-    async function getPersonList(event) {
-        setPersonName(event.target.value);
-        const response = await tmdbAPI.getPersonList(personName);
-        setPersonNameList(response.results);
-    }
+    const [actorName, setActorName] = useState("");
+    const [debounce, setDebounce] = useState(actorName);
+    const [actorsList, setActorsList] = useState([]);
+    //const [actorsListIsShow, setActorsListIsShow] = useState(false);
 
     useEffect(() => {
+        const debounceTimer = setTimeout(() => {
 
-    }, []);
+            setDebounce(actorName);
+        }, 500);
+        return () => {
+            clearTimeout(debounceTimer);
+        };
+    }, [actorName]);
 
-    return (
+    useEffect(() => {
+        const searchActors = async () => {
+            const response = await  tmdbAPI.getPersonList(debounce);
+            setActorsList(response.results);
+        };
+        if (debounce) {
+            searchActors();
+        }
+
+    }, [debounce]);
+
+    const handleChangeActorName = (e) => {
+        e.target.value === "" && setActorsList([]);//&& setActorsListIsShow(false)
+        //e.target.value && !actorsListIsShow && setActorsListIsShow(true);
+        setActorName(e.target.value)
+    };
+
+    const handleClickOnActorName = (name,id) => {
+        setActorName("");
+        setActorsList([actorsList[id]]);
+
+        //setActorsListIsShow(false)
+    };
+    //console.log(actorsList);
+    /*const handleFocusOnActorName = () => {
+        actorName && setActorsListIsShow(true)
+    };*/
+   return (
         <>
-            <input type="text" value={personName} onChange={event => getPersonList(event)}/>
-            <ul>
-                {personName.length > 0
-                && personNameList.map(item => (
-                    <li key={item.id}>
+            <input type="text" value={actorName} onChange={e => handleChangeActorName(e)} />
+            {
+                actorsList.map((item, id) => (
+                    <div key={item.id} onClick={() => handleClickOnActorName(item.name,id)}>
                         {item.name}
-                    </li>
+                    </div>
                 ))
-                }
-            </ul>
+            }
         </>
     );
+
 };
 
 export default Home;
