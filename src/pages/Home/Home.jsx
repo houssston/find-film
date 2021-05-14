@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {tmdbAPI} from "../../api/api";
 
-const Home = () => {
+const Home = (props) => {
     const [actorName, setActorName] = useState("");
     const [debounce, setDebounce] = useState(actorName);
     const [actorsList, setActorsList] = useState([]);
@@ -36,7 +36,9 @@ const Home = () => {
 
     const handleClickOnActorName = (name,id) => {
         setActorName("");
-        setActorsList([actorsList[id]]);
+        //setActorsList([actorsList[id]]);
+        props.setActor(actorsList[id]);
+        setActorsList([]);
 
         //setActorsListIsShow(false)
     };
@@ -50,6 +52,15 @@ const Home = () => {
             {
                 actorsList.map((item, id) => (
                     <div key={item.id} onClick={() => handleClickOnActorName(item.name,id)}>
+                        {item.name}
+                    </div>
+                ))
+
+            }
+            {
+                props.actors.map((item) => (
+                    <div key={item.id} >
+                        <img src={`https://image.tmdb.org/t/p/w185${item.profile_path}`} alt=""/>
                         {item.name}
                     </div>
                 ))
