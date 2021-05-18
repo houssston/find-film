@@ -1,1 +1,2 @@
-export const SET_DATA_ACTOR = 'SET_DATA_ACTOR ';
+export const SET_ACTOR_DATA = 'SET_DATA_ACTOR';
+export const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';

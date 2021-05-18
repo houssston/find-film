@@ -1,16 +1,17 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Home from "./Home";
-import {setActor} from "../../store/actions/actorAction";
-import {getActors} from "../../store/selectors/actorSelector";
+import {getActors, getJointFilms} from "../../store/selectors/actorSelector";
+import {getActorData} from "../../store/actions/actorAction";
 
 
 
 class HomeContainer extends Component {
     render() {
         return (
-            <Home setActor={this.props.setActor}
-                  actors={this.props.actors}
+            <Home actors={this.props.actors}
+                  getActorData={this.props.getActorData}
+                  getJointFilms={this.props.getJointFilms}
             />
         );
     }
@@ -19,8 +20,9 @@ class HomeContainer extends Component {
 function mapStateToProps(state) {
     return {
         actors:getActors(state),
+        getJointFilms:getJointFilms(state)
     };
 }
 export default connect(
-    mapStateToProps,{setActor}
+    mapStateToProps,{getActorData}
 )(HomeContainer);

@@ -9,7 +9,6 @@ const Home = (props) => {
 
     useEffect(() => {
         const debounceTimer = setTimeout(() => {
-
             setDebounce(actorName);
         }, 500);
         return () => {
@@ -19,7 +18,7 @@ const Home = (props) => {
 
     useEffect(() => {
         const searchActors = async () => {
-            const response = await  tmdbAPI.getPersonList(debounce);
+            const response = await  tmdbAPI.getListActors(debounce);
             setActorsList(response.results);
         };
         if (debounce) {
@@ -36,16 +35,15 @@ const Home = (props) => {
 
     const handleClickOnActorName = (name,id) => {
         setActorName("");
-        //setActorsList([actorsList[id]]);
-        props.setActor(actorsList[id]);
+        props.getActorData(actorsList[id]);
         setActorsList([]);
-
         //setActorsListIsShow(false)
     };
-    //console.log(actorsList);
+    console.log("render");
     /*const handleFocusOnActorName = () => {
         actorName && setActorsListIsShow(true)
     };*/
+
    return (
         <>
             <input type="text" value={actorName} onChange={e => handleChangeActorName(e)} />
@@ -55,7 +53,6 @@ const Home = (props) => {
                         {item.name}
                     </div>
                 ))
-
             }
             {
                 props.actors.map((item) => (
@@ -65,6 +62,11 @@ const Home = (props) => {
                     </div>
                 ))
             }
+           {props.getJointFilms.map((item) => (<div key={item.id} >
+
+                {item.original_title}
+            </div>))}
+
         </>
     );
 
