@@ -80,6 +80,9 @@
     flex-direction: column;
     align-items: center;
 }
+.list_item__disable{
+    cursor: default;
+}
 .actor_img_wrapper{
     position: relative;
 }

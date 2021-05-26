@@ -86,9 +86,9 @@ const Home = (props) => {
                                     <div className={s.search_list_item}>
                                         Not Found
                                     </div>
-                                    :
+                                    :!props.actors.some((i)=> i.id===item.id) &&
                                     <div className={s.search_list_item} key={item.id}
-                                         onClick={() => handleClickOnActorName(item.name, id)}>
+                                         onClick={() =>handleClickOnActorName(item.name, id)}>
                                         {item.name}
                                     </div>
                             ))
