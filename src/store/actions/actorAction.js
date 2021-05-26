@@ -18,8 +18,10 @@ export const setActorData  = (actorData) => ({
   actorData
 });
 
-export const toggleIsFetchingAC = (isFetching) => ({
-  type: type.TOGGLE_IS_FETCHING,
-  isFetching: isFetching,
+export const removeActorData  = (actorId) => ({
+  type: type.REMOVE_ACTOR_DATA,
+  actorId
 });
+
+
 

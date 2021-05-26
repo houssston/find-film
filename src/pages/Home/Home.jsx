@@ -13,6 +13,7 @@ const Home = (props) => {
     const [debounce, setDebounce] = useState(actorName);
     const [actorsList, setActorsList] = useState([]);
     const [actorsListIsShow, setActorsListIsShow] = useState(false);
+
     const searchField = useRef(null);
     const searchFieldWrapper = useRef(null);
 
@@ -105,7 +106,7 @@ const Home = (props) => {
                                                    alt="item.name"/>
                                             : <img className={s.actor_img} src={noPhoto} alt={item.name}/>
                                         }
-                                        <img className={s.img_hidden_block} alt={"Remove actor"} src={removeIcon} onClick={() => console.log(1)}/>
+                                        <img className={s.img_hidden_block} alt={"Remove actor"} src={removeIcon} onClick={() => props.removeActorData(item.id)}/>
                                     </div>
                                     <div className={s.actor_name}>{item.name}</div>
                                 </div>
@@ -118,7 +119,7 @@ const Home = (props) => {
                 </div>
             </div>
             <div className={cn(s.movies_list, s.wrapper)}>
-                {props.getJointFilms.map((item) => (<div key={item.id} className={s.movies_list_item}>
+                {props.jointFilms.map((item) => (<div key={item.id} className={s.movies_list_item}>
                     <div className={s.movie_img_wrapper}>
                         {item.poster_path
                             ? <img className={s.movie_img} src={`https://image.tmdb.org/t/p/w185${item.poster_path}`}
