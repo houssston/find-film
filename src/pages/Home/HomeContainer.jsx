@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 import Home from "./Home";
 import {getActors, getJointFilms} from "../../store/selectors/actorSelector";
 import {getActorData, removeActorData} from "../../store/actions/actorAction";
+import {compose} from "redux";
+import {withRouter} from "react-router";
 
 
 
@@ -24,6 +26,6 @@ function mapStateToProps(state) {
         jointFilms:getJointFilms(state)
     };
 }
-export default connect(
+export default compose(withRouter, connect(
     mapStateToProps,{getActorData,removeActorData}
-)(HomeContainer);
+))(HomeContainer);

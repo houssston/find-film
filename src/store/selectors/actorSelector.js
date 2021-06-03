@@ -8,7 +8,6 @@ export const getJointFilms = (state) => {
     for (let actors of state.actors.list) {
         let temp = [];
         for (let cast of actors.cast) {
-
             for (let isJoint of joint) {
                 cast.id === isJoint.id && temp.push(cast)
             }

@@ -2,10 +2,12 @@ import React, {useEffect, useRef, useState} from 'react';
 import {tmdbAPI} from "../../api/api";
 import s from "./Home.module.css";
 import cn from "classnames";
+
 import noPoster from "../../assets/img/noposter.jpg";
 import noPhoto from "../../assets/img/nophoto.jpg";
 import addIcon from "../../assets/img/add-icon.png";
 import removeIcon from "../../assets/img/remove-icon.png";
+import {useHistory} from "react-router";
 
 
 const Home = (props) => {
@@ -13,9 +15,25 @@ const Home = (props) => {
     const [debounce, setDebounce] = useState(actorName);
     const [actorsList, setActorsList] = useState([]);
     const [actorsListIsShow, setActorsListIsShow] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
 
     const searchField = useRef(null);
     const searchFieldWrapper = useRef(null);
+
+    const history = useHistory();
+    const urlParams = new URLSearchParams(history.location.search);
+
+
+    useEffect(async () => {
+        if(urlParams.getAll('actor').length > 0 ) {
+            setIsFetching(true);
+            for (let pair of urlParams.entries()) {
+                const response = await tmdbAPI.getActorData(pair[1]);
+                await props.getActorData(response);
+            }
+            setIsFetching(false);
+        }
+    },[]);
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -23,7 +41,6 @@ const Home = (props) => {
                 setActorsListIsShow(false);
             }
         }
-
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
@@ -33,7 +50,7 @@ const Home = (props) => {
     useEffect(() => {
         const debounceTimer = setTimeout(() => {
             setDebounce(actorName);
-        }, 500);
+        }, 1000);
         return () => {
             clearTimeout(debounceTimer);
         };
@@ -53,25 +70,44 @@ const Home = (props) => {
     }, [debounce]);
 
 
-    const handleChangeActorName = (e) => {
+    const handleChangeParamURL = (id) => {
+        const actorsIdInUrl = urlParams.getAll('actor');
+
+        if(actorsIdInUrl.includes(id.toString())){
+            urlParams.delete("actor");
+            for(let actorId of actorsIdInUrl) {
+                parseInt(actorId) !== id && urlParams.append('actor', `${actorId}`);
+            }
+        }
+        else{
+            urlParams.append('actor', `${id}`);
+        }
+
+        history.push(`/?${urlParams}`);
+    };
+
+    const handleInputActorName = (e) => {
         e.target.value === "" && setActorsList([]);
         setActorName(e.target.value);
     };
 
-    const handleClickOnActorName = (name, id) => {
+    const handleClickOnActorName = (id) => {
         setActorName("");
+        handleChangeParamURL(actorsList[id].id);
         props.getActorData(actorsList[id]);
         setActorsList([]);
     };
 
+    console.log(1);
     return (
         <main>
             <div className={s.search_actors}>
                 <div className={s.wrapper}>
+
                     <div className={s.search_title}>Search <span>movies</span> by actors</div>
                     <div className={s.search_field_wrapper} ref={searchFieldWrapper}>
                         <input className={s.search_field} placeholder={'Tom Cruise'} type={'text'} value={actorName}
-                               onChange={e => handleChangeActorName(e)}
+                               onChange={e => handleInputActorName(e)}
                                onFocus={() => setActorsListIsShow(true)}
                                ref={searchField}/>
                         <svg className={s.search_icon} focusable="false" viewBox="0 0 24 24" aria-hidden="true">
@@ -87,8 +123,7 @@ const Home = (props) => {
                                         Not Found
                                     </div>
                                     :!props.actors.some((i)=> i.id===item.id) &&
-                                    <div className={s.search_list_item} key={item.id}
-                                         onClick={() =>handleClickOnActorName(item.name, id)}>
+                                    <div className={s.search_list_item} key={item.id} onClick={() =>handleClickOnActorName(id)}>
                                         {item.name}
                                     </div>
                             ))
@@ -96,7 +131,7 @@ const Home = (props) => {
                         </div>
                     </div>
                     <div className={s.actors_list}>
-                        {
+                        {!isFetching &&
                             props.actors.map((item) => (
                                 <div className={s.actors_list_item} key={item.id}>
                                     <div className={s.actor_img_wrapper}>
@@ -106,7 +141,7 @@ const Home = (props) => {
                                                    alt="item.name"/>
                                             : <img className={s.actor_img} src={noPhoto} alt={item.name}/>
                                         }
-                                        <img className={s.img_hidden_block} alt={"Remove actor"} src={removeIcon} onClick={() => props.removeActorData(item.id)}/>
+                                        <img className={s.img_hidden_block} alt={"Remove actor"} src={removeIcon} onClick={() => handleChangeParamURL(item.id) & props.removeActorData(item.id)}/>
                                     </div>
                                     <div className={s.actor_name}>{item.name}</div>
                                 </div>
@@ -119,7 +154,8 @@ const Home = (props) => {
                 </div>
             </div>
             <div className={cn(s.movies_list, s.wrapper)}>
-                {props.jointFilms.map((item) => (<div key={item.id} className={s.movies_list_item}>
+                {!isFetching &&
+                    props.jointFilms.map((item) => (<div key={item.id} className={s.movies_list_item}>
                     <div className={s.movie_img_wrapper}>
                         {item.poster_path
                             ? <img className={s.movie_img} src={`https://image.tmdb.org/t/p/w185${item.poster_path}`}

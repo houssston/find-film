@@ -20,5 +20,11 @@ export const tmdbAPI = {
             .then(response => {
                 return response.data.cast;
             });
+    },
+    getActorData(id) {
+            return instance.get(`person/${id}?`)
+            .then(response => {
+                return response.data;
+            });
     }
 };
