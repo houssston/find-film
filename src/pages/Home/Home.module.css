@@ -23,9 +23,15 @@
     position: relative;
 }
 .search_title{
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
-    padding: 25px 0;
+    padding: 15px 0;
+}
+@media only screen and (min-width: 480px) {
+    .search_title{
+        font-size: 28px;
+        padding: 25px 0;
+    }
 }
 .search_title span{
     color: #ffd200;
@@ -73,12 +79,23 @@
 }
 .actors_list{
     display: flex;
+    flex-wrap: wrap;
 }
 .actors_list_item{
-    width: 20%;
+    width: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+@media only screen and (min-width: 480px){
+    .actors_list_item {
+        width: 33%;
+    }
+}
+@media only screen and (min-width : 768px){
+    .actors_list_item {
+        width: 20%;
+    }
 }
 .list_item__disable{
     cursor: default;
@@ -87,10 +104,15 @@
     position: relative;
 }
 .actor_img{
-    width: 130px;
+    width: 120px;
     border-radius: 5px;
     background-color: rgba(33%, 33%, 33%, 0.66);
     cursor: pointer;
+}
+@media only screen and (min-width: 480px) {
+    .actor_img{
+        width: 130px;
+    }
 }
 .img_hidden_block{
     position: absolute;
@@ -120,13 +142,39 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 20%;
+    width: 100%;
 }
+
+@media only screen and (min-width: 480px) {
+    .movies_list_item{
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .movies_list_item{
+        width: 33%;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .movies_list_item{
+        width: 25%;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .movies_list_item{
+        width: 20%;
+    }
+}
+
 .movie_img_wrapper{
     position: relative;
 }
 .movie_img{
     margin-bottom: 5px;
+    width: 185px;
 }
 .movie_year_released{
     position: absolute;
