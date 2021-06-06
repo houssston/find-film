@@ -192,4 +192,11 @@
     max-width: 187px;
     width: 100%;
 }
+.movies_not_found{
+    text-transform: uppercase;
+    text-align: center;
+    color: #ffd200;
+    font-weight: 600;
+    font-size: 18px;
+}
 
