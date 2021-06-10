@@ -1,6 +1,6 @@
 ## Search Collaborative films from [The Movie DB](https://www.themoviedb.org)
 
- ![](https://github.com/houssston/find-film/blob/review/readme-image.gif)
+ ![](https://github.com/houssston/find-film/blob/main/readme-image.gif)
 Display collaboration movies with using API [here](https://houssston.github.io/searchCollaborations/)  
 Share your search using URL(URLSearchParams).
 
