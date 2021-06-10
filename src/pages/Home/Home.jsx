@@ -16,6 +16,7 @@ const Home = (props) => {
     const [actorsList, setActorsList] = useState([]);
     const [actorsListIsShow, setActorsListIsShow] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
+    const [error, setError] = useState([]);
 
     const searchField = useRef(null);
     const searchFieldWrapper = useRef(null);
@@ -28,8 +29,17 @@ const Home = (props) => {
         if (urlParams.getAll('actor').length > 0) {
             setIsFetching(true);
             for (let pair of urlParams.entries()) {
-                const response = await tmdbAPI.getActorData(pair[1]);
-                await props.getActorData(response);
+                try {
+                    let response = await tmdbAPI.getActor(pair[1]);
+                    await props.getActorData(response.data);
+                }catch(error) {
+                    const actorsIdInUrl = urlParams.getAll('actor');
+                    urlParams.delete("actor");
+                    for (let actorId of actorsIdInUrl) {
+                        actorId !== pair[1] && urlParams.append('actor', `${actorId}`);
+                    }
+                    history.push(`/?${urlParams}`);
+                }
             }
             setIsFetching(false);
         }
@@ -70,7 +80,6 @@ const Home = (props) => {
         }
     }, [debounce]);
 
-
     const handleChangeParamURL = (id) => {
         const actorsIdInUrl = urlParams.getAll('actor');
 
@@ -97,8 +106,6 @@ const Home = (props) => {
         props.getActorData(actorsList[id]);
         setActorsList([]);
     };
-
-    console.log(props.actors);
 
     return (
         <main>
@@ -160,23 +167,24 @@ const Home = (props) => {
             {!isFetching &&
             <div className={cn(s.movies_list, s.wrapper)}>
                 {props.jointFilms.map((item) => (
-                <div key={item.id} className={s.movies_list_item}>
-                    <div className={s.movie_img_wrapper}>
-                        {item.poster_path
-                            ? <img className={s.movie_img} src={`https://image.tmdb.org/t/p/w185${item.poster_path}`}
-                                   alt={item.title}/>
-                            : <img className={s.movie_img} src={noPoster} alt={item.title}/>
-                        }
-                        {item.release_date &&
-                        <div className={s.movie_year_released}>{item.release_date.substr(0, 4)}</div>}
+                    <div key={item.id} className={s.movies_list_item}>
+                        <div className={s.movie_img_wrapper}>
+                            {item.poster_path
+                                ?
+                                <img className={s.movie_img} src={`https://image.tmdb.org/t/p/w185${item.poster_path}`}
+                                     alt={item.title}/>
+                                : <img className={s.movie_img} src={noPoster} alt={item.title}/>
+                            }
+                            {item.release_date &&
+                            <div className={s.movie_year_released}>{item.release_date.substr(0, 4)}</div>}
+                        </div>
+                        <div className={s.movie_title}>{item.title}</div>
                     </div>
-                    <div className={s.movie_title}>{item.title}</div>
-                </div>
                 ))}
             </div>
             }
             {props.actors.length === 0 && props.jointFilms.length === 0 &&
-                <div className={cn(s.movies_not_found, s.wrapper)}> Fill in the field required for search </div>
+            <div className={cn(s.movies_not_found, s.wrapper)}> Fill in the field required for search </div>
             }
             {props.actors.length > 0 && props.jointFilms.length === 0 &&
             <div className={cn(s.movies_not_found, s.wrapper)}> No results </div>

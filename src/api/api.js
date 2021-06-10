@@ -21,10 +21,13 @@ export const tmdbAPI = {
                 return response.data.cast;
             });
     },
-    getActorData(id) {
-            return instance.get(`person/${id}?`)
+    getActor(id) {
+        return instance.get(`person/${id}?`)
             .then(response => {
-                return response.data;
-            });
+                return response;
+            })
+            /*.catch(error => {
+                return error.response;
+            })*/;
     }
 };

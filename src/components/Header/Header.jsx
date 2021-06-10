@@ -9,7 +9,7 @@ const Header = () => {
         <header>
             <div className={s.wrapper}>
                 <div className={s.content}>
-                    <a className={s.logo} href={'/'}>
+                    <a className={s.logo} href={process.env.PUBLIC_URL}>
                         <img className={s.logo__img} src={logo} alt={'Logo'}/>
                     </a>
                 </div>

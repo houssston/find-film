@@ -9,8 +9,8 @@ function App() {
     return (
         <>
             <Header/>
-            <BrowserRouter>
-                <Route path='' render={ () => <HomeContainer/>}/>
+            <BrowserRouter basename={process.env.PUBLIC_URL}>
+                <Route path='/' render={ () => <HomeContainer/>}/>
             </BrowserRouter>
             <Footer/>
         </>
